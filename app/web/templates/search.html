@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Search - Voice Log{% endblock %}
+{% block content %}
+  <form class="search-form" method="get" action="{{ url_for('search.search') }}">
+    <input type="text" name="q" value="{{ q }}" placeholder="Search your transcripts..." autofocus>
+    <button type="submit">Search</button>
+  </form>
+
+  {% if q %}
+    <p class="muted">{{ results|length }} result{{ '' if results|length == 1 else 's' }} for "{{ q }}"</p>
+  {% endif %}
+
+  <ul class="result-list">
+    {% for r in results %}
+      <li class="result-item">
+        <a href="{{ url_for('browse.session_view', date=r.date, session_id=r.session_id, recording=r.recording_id, t=r.seek) }}">
+          <span class="result-meta">{{ r.date }} {{ r.time }}</span>
+          <span class="result-snippet">{{ r.snippet|highlight }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

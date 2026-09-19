@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ date }} - Voice Log{% endblock %}
+{% block content %}
+  <p><a href="{{ url_for('browse.days') }}">&larr; All days</a></p>
+  <h1>{{ date }}</h1>
+  <p><a href="{{ url_for('summary.view', date=date) }}">
+    {{ "View summary" if summary else "Generate summary" }}
+  </a></p>
+
+  <ul class="session-list">
+    {% for s in sessions %}
+      <li>
+        <a href="{{ url_for('browse.session_view', date=date, session_id=s.session_id) }}">
+          {{ s.start }} - {{ s.end }}
+        </a>
+        <span class="muted">{{ s.count }} clip{{ '' if s.count == 1 else 's' }}</span>
+      </li>
+    {% else %}
+      <li class="muted">No sessions.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

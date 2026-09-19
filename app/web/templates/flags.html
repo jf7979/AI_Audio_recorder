@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Flags - Voice Log{% endblock %}
+{% block content %}
+  <h1>Flags</h1>
+  <nav class="tabs">
+    <a class="{{ 'active' if status == 'open' }}" href="{{ url_for('flags.index', status='open') }}">Open</a>
+    <a class="{{ 'active' if status == 'done' }}" href="{{ url_for('flags.index', status='done') }}">Done</a>
+    <a class="{{ 'active' if status == 'all' }}" href="{{ url_for('flags.index', status='all') }}">All</a>
+  </nav>
+
+  <ul class="flag-list">
+    {% for f in flags %}
+      <li class="flag-item" data-flag-id="{{ f.id }}">
+        <label>
+          <input type="checkbox" class="flag-checkbox"
+                 data-toggle-url="{{ url_for('flags.toggle', flag_id=f.id) }}"
+                 {{ 'checked' if f.is_done }}>
+          <span class="flag-snippet {{ 'done' if f.is_done }}">{{ f.snippet }}</span>
+        </label>
+        <span class="muted">
+          <a href="{{ url_for('browse.session_view', date=f.date, session_id=f.session_id, recording=f.recording_id) }}">
+            {{ f.date }} {{ f.time }}
+          </a>
+          &middot; "{{ f.keyword }}"
+        </span>
+      </li>
+    {% else %}
+      <li class="muted">Nothing here.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

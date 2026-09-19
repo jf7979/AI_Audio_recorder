@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ date }} session - Voice Log{% endblock %}
+{% block content %}
+  <p><a href="{{ url_for('browse.day_view', date=date) }}">&larr; {{ date }}</a></p>
+
+  {% for rec in recordings %}
+    <article class="recording" id="recording-{{ rec.id }}" data-recording-id="{{ rec.id }}">
+      <div class="recording-header">
+        <span class="local-time">{{ rec.local_time }}</span>
+        <audio controls preload="metadata" src="{{ url_for('browse.audio', recording_id=rec.id) }}"></audio>
+      </div>
+      <p class="transcript">
+        {% if rec.status == 'pending' %}
+          <em class="muted">transcription pending...</em>
+        {% elif rec.status == 'error' %}
+          <em class="muted">transcription failed</em>
+        {% elif rec.words %}
+          {% for w in rec.words %}<span class="word" data-start="{{ w.start }}">{{ w.word }}</span>{% endfor %}
+        {% else %}
+          {{ rec.text }}
+        {% endif %}
+      </p>
+    </article>
+  {% endfor %}
+{% endblock %}

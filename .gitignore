@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+logs/
+data/
+config.yaml
+web_auth.yaml
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+.pytest_cache/

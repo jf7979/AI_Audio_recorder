@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Voice Log - Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="login-page">
+    <form class="login-box" method="post">
+      <h1>Voice Log</h1>
+      {% if error %}<p class="error">{{ error }}</p>{% endif %}
+      <input type="password" name="password" placeholder="Password" autofocus required>
+      <button type="submit">Log in</button>
+    </form>
+  </main>
+</body>
+</html>

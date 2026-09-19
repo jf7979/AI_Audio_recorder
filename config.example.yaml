@@ -1,0 +1,73 @@
+# Copy this file to config.yaml and edit for your machine.
+# config.yaml is gitignored since it holds machine-specific paths (e.g. data_dir,
+# LAN addresses). Your login password lives separately in web_auth.yaml, written
+# by scripts/setup_password.py - never put it in this file.
+
+audio:
+  # Substring to match against an input device name (see: python -m app.recorder.list_devices).
+  # null uses the system default input device.
+  device: null
+  # Must be 16000 - the VAD and faster-whisper are both hardcoded to it.
+  # If your mic doesn't support 16kHz natively, PortAudio/sounddevice will
+  # resample for you; just leave this at 16000 either way.
+  sample_rate: 16000
+
+vad:
+  # How much trailing silence closes a speech segment.
+  silence_ms_to_close: 1800
+  # Segments shorter than this (after trimming) are discarded as noise.
+  min_segment_ms: 800
+  # A single recording is force-split if it runs this long without a silence
+  # gap (e.g. TV/music left on, or a false-positive VAD that never sees real
+  # silence). Bounds memory use and keeps transcription jobs a sane size.
+  max_segment_seconds: 300
+  # A new "session" (conversation) starts if the gap since the previous
+  # recording's end exceeds this many minutes.
+  session_gap_minutes: 5
+  # Padding kept before/after detected speech so words aren't clipped.
+  speech_pad_ms: 300
+  # Silero VAD speech-probability threshold (0-1). Raise if background noise
+  # is triggering false positives; lower if quiet speech is being missed.
+  threshold: 0.5
+
+transcription:
+  # tiny.en | base.en | small.en | medium.en - trade off speed vs accuracy.
+  model_size: small.en
+  compute_type: int8
+  # Where faster-whisper caches/looks for the downloaded model. Leave null to
+  # use its per-user default cache - but set this explicitly (e.g. a folder
+  # under storage.data_dir) if this runs as a Windows service under a
+  # dedicated/LocalSystem account, since that account's profile won't have
+  # whatever got downloaded during your manual interactive test.
+  model_dir: null
+
+keywords:
+  # Say one of these phrases; everything you say afterward (until the segment
+  # ends) is captured as a flagged to-do/important item.
+  triggers:
+    - "flag this"
+    - "remember this"
+
+summarization:
+  active_backend: local
+  backends:
+    local:
+      # Ollama running on this machine.
+      base_url: "http://localhost:11434/v1"
+      model: "qwen2.5:7b-instruct"
+    remote:
+      # LM Studio (or any OpenAI-compatible server) running elsewhere on your LAN.
+      base_url: "http://<mac-studio-ip>:1234/v1"
+      model: "<model loaded in LM Studio>"
+
+storage:
+  # MUST be a local disk path. Never point this at a OneDrive/iCloud/Dropbox/
+  # Google Drive synced folder - cloud sync clients corrupt SQLite WAL files.
+  data_dir: "./data"
+
+web:
+  host: "0.0.0.0"
+  port: 8420
+  # Login password + session secret live in web_auth.yaml (next to this file),
+  # not here - that file is entirely machine-written by scripts/setup_password.py,
+  # so rewriting it never clobbers the comments in this one.

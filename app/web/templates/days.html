@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Days - Voice Log{% endblock %}
+{% block content %}
+  <h1>Days</h1>
+  <ul class="day-list">
+    {% for d in days %}
+      <li>
+        <a href="{{ url_for('browse.day_view', date=d.date) }}">{{ d.date }}</a>
+        <span class="muted">{{ d.count }} recording{{ '' if d.count == 1 else 's' }}</span>
+        {% if d.has_summary %}<span class="badge">summarized</span>{% endif %}
+        <a class="side-link" href="{{ url_for('summary.view', date=d.date) }}">summary</a>
+      </li>
+    {% else %}
+      <li class="muted">No recordings yet.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

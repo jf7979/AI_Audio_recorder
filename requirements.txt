@@ -1,0 +1,24 @@
+# Install torch/torchaudio first from the CPU-only index (see SETUP.md) - the
+# default PyPI wheel pulls a large CUDA build that's useless on the N100's
+# integrated GPU:
+#   pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+# silero-vad depends on torch even when using its ONNX inference backend
+# (onnxruntime only replaces the model's compute backend, not the Python API).
+#
+# Bounds below are conservative (allow patch/minor upgrades, block major
+# version jumps) rather than exact pins - this hasn't been tested against a
+# frozen lock file yet. Once the Windows install is verified working, prefer
+# generating a real lock file (`pip freeze`) from that known-good environment.
+torch>=2.2,<3.0
+torchaudio>=2.2,<3.0
+sounddevice>=0.4.6,<0.6
+soundfile>=0.12.1,<0.13
+numpy>=1.24,<3.0
+silero-vad>=6.0,<7.0
+onnxruntime>=1.17,<2.0
+faster-whisper>=1.0.0,<2.0
+Flask>=3.0,<4.0
+waitress>=3.0,<4.0
+PyYAML>=6.0,<7.0
+requests>=2.31,<3.0
+werkzeug>=3.0,<4.0
